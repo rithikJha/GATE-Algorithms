@@ -438,8 +438,8 @@ int main()
 
     // a.reverse();
     // a.printList();
-    for(auto i=a.rbegin();i!=a.rend();i++)
-        cout<<(*i).data<<endl;
+    for(auto i:a)
+        cout<<i.data<<endl;
 
     /*
     cout << "Add 4 at 2\n";

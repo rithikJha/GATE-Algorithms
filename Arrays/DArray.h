@@ -33,11 +33,14 @@ public:
     DArrayIterator(pointer_type ptr) : m_ptr(ptr) {}
 
     DArrayIterator &operator++();
-    DArrayIterator &operator++(int);
+    DArrayIterator operator++(int);
     DArrayIterator operator+(int idx);
     DArrayIterator &operator--();
-    DArrayIterator operator-(int idx);
-    DArrayIterator &operator--(int);
+    DArrayIterator operator-(int idx){
+        return (m_ptr-idx);
+    };
+    int operator-(DArrayIterator idx);
+    DArrayIterator operator--(int);
     reference_type operator[](int idx);
     reference_type operator*();
     pointer_type operator->();
@@ -61,11 +64,11 @@ public:
     ConstDArrayIterator(pointer_type ptr) : m_ptr(ptr) {}
 
     ConstDArrayIterator &operator++();
-    ConstDArrayIterator &operator++(int);
+    ConstDArrayIterator operator++(int);
     ConstDArrayIterator operator+(int idx);
     ConstDArrayIterator &operator--();
-    ConstDArrayIterator &operator--(int);
-    ConstDArrayIterator operator-(int idx);
+    ConstDArrayIterator operator--(int);
+    int operator-(ConstDArrayIterator idx);
     reference_type operator[](int idx);
     reference_type operator*();
     pointer_type operator->();
@@ -91,6 +94,31 @@ public:
     DArray<T>(initializer_list<T> l);
     DArray<T>(size_t);
     DArray<T>(DArray<T> &other);
+    DArray<T>(DArray<T> &&other) : m_data((T *)::operator new(sizeof(T) * other.size())), s(other.size()), pos(other.noOfitems())
+    {
+        //cout<<"r...";
+        for (int i = 0; i < s; i++)
+        {
+            m_data[i] = move(other[i]);
+        }
+    }
+
+    DArray<T>(Iterator b, Iterator e) :  m_data(new T[e-b]),s(e - b), pos(e-b)
+    {
+        int i = 0;
+        for (Iterator it = b; it != e; it++, i++){
+            m_data[i] = *it;
+        }
+            
+    }
+    DArray<T>(const T *b, const T *e) : m_data((T *)::operator new((e - b+10) * sizeof(T))),s(e - b+10), pos(e-b)
+    {
+        //cout << "s";
+        int i = 0;
+        for (auto it = b; it != e; it++, i++)
+            m_data[i] = *it;
+    }
+
     ~DArray();
 
     size_t size();
@@ -101,6 +129,7 @@ public:
     const value_type &operator[](int i) const;
     DArray &operator=(DArray &other);
     DArray &operator=(const DArray &other);
+    DArray &operator=(DArray &&other);
     void push_back(const value_type &data);
     void push_back(value_type &&data);
     void pop_back();

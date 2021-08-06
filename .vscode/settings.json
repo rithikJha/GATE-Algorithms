@@ -12,6 +12,10 @@
     "string": "cpp",
     "vector": "cpp",
     "functional": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "new": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp",
+    "system_error": "cpp"
   }
 }

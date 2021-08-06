@@ -13,6 +13,8 @@ _TTD typename _DAIC::pointer_type _DAIC::operator->() { return m_ptr; }
 
 _TTD bool _DAIC::operator==(const DArrayIterator &other) const { return m_ptr == other.m_ptr; }
 _TTD bool _DAIC::operator!=(const DArrayIterator &other) const { return !(m_ptr == other.m_ptr); }
+/************************************************************/
+
 
 /************************************************************/
 _CDAI &_CDAIC::operator++() { ++m_ptr; return *this; }
@@ -32,11 +34,6 @@ _TTD bool _CDAIC::operator!=(const ConstDArrayIterator &other) const { return !(
 /************************************************************/
 
 
-
-
-
-
-
 /************************************************************/
 _TCT _DA::DArray() : m_data((T *)::operator new(10 * sizeof(T))), s(10), pos(0) {}
 _TCT _DA::DArray(initializer_list<T> l) : m_data((T *)::operator new(sizeof(T) * l.size() + 10)), 
@@ -53,6 +50,25 @@ _TCT _DA::DArray(DArray<T> &other) : m_data((T *)::operator new(sizeof(T) * (oth
     for (int i = 0; i < s; i++)
         m_data[i] = other[i];
 }
+_TCT _DA::DArray(DArray<T> &&other) : m_data((T *)::operator new(sizeof(T) * other.size())), 
+                                        s(other.size()), pos(other.noOfitems()) {
+        //cout<<"r...";
+        for (int i = 0; i < s; i++)
+            m_data[i] = move(other[i]);
+}
+_TCT _DA::DArray(Iterator b, Iterator e) :  m_data(new T[e-b]),s(e - b), pos(e-b) {
+        int i = 0;
+        for (Iterator it = b; it != e; it++, i++)
+            m_data[i] = *it;
+}
+_TCT _DA::DArray(const T *b, const T *e) : m_data((T *)::operator new((e - b+10) * sizeof(T)))
+                                            ,s(e - b+10), pos(e-b) {
+        //cout << "s";
+        int i = 0;
+        for (auto it = b; it != e; it++, i++)
+            m_data[i] = *it;
+}
+
 _TCT _DA::~DArray(){
     //cout << "Deleted: " << m_data[0] << endl;
     clear();
@@ -60,7 +76,21 @@ _TCT _DA::~DArray(){
     s = 0;
     pos = 0;
 }
+/************************************************************************************************************************/
 
+
+
+
+
+
+
+
+
+
+
+
+
+/************************************************************************************************************************/
 _TCT size_t _DA::size() { return s; }
 _TCT int _DA::noOfitems() { return pos; }
 _TCT void _DA::print() {

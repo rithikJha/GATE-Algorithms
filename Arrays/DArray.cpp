@@ -130,6 +130,7 @@ _TCT _DA &_DA::operator=(const _DA &other){
     m_data = (T *)::operator new(s * sizeof(T));
     for (int i = 0; i < pos; i++)
         m_data[i] = other[i];
+    return *this;
 }
 
 _TCT void _DA::push_back(const value_type &data) {
